@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Restaurant Chatbot</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+}
+
+.chatbox {
+  width: 360px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.messages {
+  height: 320px;
+  overflow-y: auto;
+  border-bottom: 1px solid #ccc;
+  padding: 5px;
+}
+
+.bot {
+  background: #e6e6e6;
+  padding: 8px;
+  margin: 5px;
+  border-radius: 6px;
+}
+
+.user {
+  background: #007bff;
+  color: white;
+  padding: 8px;
+  margin: 5px;
+  border-radius: 6px;
+  text-align: right;
+}
+
+input {
+  width: 75%;
+  padding: 8px;
+}
+
+button {
+  padding: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="chatbox">
+  <div class="messages" id="chat"></div>
+  <input id="input" type="text" placeholder="Type here..." />
+  <button onclick="send()">Send</button>
+</div>
+
+<script>
+let chat = document.getElementById("chat");
+
+let menu = {
+  pizza: 250,
+  burger: 150,
+  dosa: 80,
+  coffee: 50
+};
+
+let order = [];
+
+function bot(msg) {
+  chat.innerHTML += "<div class='bot'>" + msg + "</div>";
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function user(msg) {
+  chat.innerHTML += "<div class='user'>" + msg + "</div>";
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Welcome message (NO command list)
+bot("👋 Welcome to Foodie Restaurant!");
+
+function send() {
+  let input = document.getElementById("input");
+  let msg = input.value.toLowerCase().trim();
+  if (msg === "") return;
+
+  user(msg);
+  input.value = "";
+
+  // Greeting
+  if (msg === "hi" || msg === "hii" || msg === "hello") {
+    bot("Hello 😊 How can I help you?");
+  }
+
+  // Menu
+  else if (msg === "menu") {
+    bot("🍽️ Our Menu:<br>🍕 Pizza - ₹250<br>🍔 Burger - ₹150<br>🥞 Dosa - ₹80<br>☕ Coffee - ₹50");
+  }
+
+  // Order item
+  else if (menu[msg]) {
+    order.push(msg);
+    bot("✅ " + msg + " added to your order");
+  }
+
+  // Bill
+  else if (msg === "bill") {
+    if (order.length === 0) {
+      bot("🧾 No items ordered yet.");
+      return;
+    }
+    let total = 0;
+    let items = "";
+    for (let i of order) {
+      total += menu[i];
+      items += i + ", ";
+    }
+    bot("🧾 Items: " + items);
+    bot("💰 Total Bill: ₹" + total);
+  }
+
+  // Clear
+  else if (msg === "clear") {
+    order = [];
+    bot("🗑️ Order cleared.");
+  }
+
+  // Exit
+  else if (msg === "exit") {
+    bot("🙏 Thank you! Visit again.");
+  }
+
+  // Unknown
+  else {
+    bot("❌ I didn't understand. Type *menu* to see food items.");
+  }
+}
+</script>
+
+</body>
+</html>
